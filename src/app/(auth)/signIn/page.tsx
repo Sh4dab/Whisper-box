@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { signIn } from "next-auth/react"
 
-const page = () => {
+const SignInPage = () => {
 
   const router= useRouter()
 
@@ -24,8 +24,6 @@ const page = () => {
       password: ''
     }
   })
-
-  
 
   const onSubmit= async (data: z.infer<typeof signInSchema>)=>{
     const result= await signIn('credentials', {
@@ -110,4 +108,4 @@ const page = () => {
   )
 }
 
-export default page
+export default SignInPage
