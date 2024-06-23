@@ -14,7 +14,7 @@ export async function GET(request:Request){
     if(!session || !session.user){
         return Response.json({
             success: false,
-            message:"Not Authenticated"
+            messages:"Not Authenticated"
         },{status:401})
     }
 
@@ -22,26 +22,25 @@ export async function GET(request:Request){
 
     try {
         const user=await UserModel.aggregate([
-            {$match: {id:userId}},
+            {$match: {_id:userId}},
             {$unwind: '$messages'},
             {$sort: {'messages.createdAt':-1}},
             {$group: {_id: '$_id', messages:{$push:'$messages'}}}
-        ])
+        ]).exec()
         if(!user || user.length ===0){
             return Response.json({
                 success: false,
-                message:"User Not Found"
+                messages:"User Not Found"
             },{status:401})
         }
         return Response.json({
-            success: true,
-            message: user[0].messages
+            messages: user[0].messages
         },{status:200})
     } catch (error) {
         console.log("Unexpected error ", error);
         return Response.json({
             success: false,
-            message:"Internal server error"
+            messages:"Internal server error"
         },{status:500})
     }
 }

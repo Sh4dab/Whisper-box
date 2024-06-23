@@ -4,16 +4,15 @@ import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function POST(request: NextRequest){
+export async function POST(request: Request){
     await dbConnect();
-    console.log("hi");
     try {
         const {username,email,password}= await request.json();
         const existingUser= await UserModel.findOne({
             username,
         })
         if(existingUser){
-            return NextResponse.json({
+            return Response.json({
                 success:false,
                 message: "Username is already taken"
             },{status:400})
@@ -23,7 +22,7 @@ export async function POST(request: NextRequest){
             email,
         })
         if(existingUserByEmail){
-            return NextResponse.json({
+            return Response.json({
                 success:false,
                 message: "User already exist with this email"
             },{status:400})
@@ -39,10 +38,16 @@ export async function POST(request: NextRequest){
             })
 
             await newUser.save();
+
+            return Response.json({
+                  success: true,
+                  message: 'User registered successfully',
+                },{ status: 200 }
+              );
         }
     } catch (error:any) {
         console.log("Error Registering User",error);
-        return NextResponse.json({
+        return Response.json({
             success:false,
             message:"Error Registering User"
         },{status:500})
